@@ -6,6 +6,10 @@
 using namespace std;
 
 class Solution {
+  int other(int s) {
+    return (0 == s) ? 1 : 0;
+  }
+
  public:
   int countStudents(vector<int> &students, vector<int> &food) {
     int hungry_count = 0;
@@ -17,10 +21,10 @@ class Solution {
         *iter = -1;
         front = next(iter);
       } else {
-        auto last = partition(students.begin(), students.end(), [](int p) {
-          return -1 != p;
+        int preference = other(f);
+        hungry_count = count_if(students.begin(), students.end(), [preference](int p) {
+          return p == preference;
         });
-        hungry_count = distance(students.begin(), last);
         break;
       }
     }

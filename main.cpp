@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <vector>
@@ -6,9 +7,25 @@ using namespace std;
 
 class Solution {
  public:
-  int countStudents(vector<int> &students, vector<int> &sandwiches) {
-    // FIXME
-    return 0;
+  int countStudents(vector<int> &students, vector<int> &food) {
+    int hungry_count = 0;
+    auto front = students.begin();
+    for (int f: food) {
+      auto iter = find(front, students.end(), f);
+      iter = (students.end() != iter) ? iter : find(students.begin(), front, f);
+      if (*iter == f) {
+        *iter = -1;
+        front = next(iter);
+      } else {
+        auto last = partition(students.begin(), students.end(), [](int p) {
+          return -1 != p;
+        });
+        hungry_count = distance(students.begin(), last);
+        break;
+      }
+    }
+
+    return hungry_count;
   }
 };
 
@@ -27,7 +44,7 @@ void TestCountStudents() {
   {
     vector<int> students{1, 1};
     vector<int> sandwiches{0, 1};
-    assert(1 == s.countStudents(students, sandwiches));
+    assert(2 == s.countStudents(students, sandwiches));
   }
 }
 
